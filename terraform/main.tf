@@ -4,4 +4,5 @@ module "ecr" {
 
   repository_name = var.ecr_name[count.index]
   create_lifecycle_policy	= false
+  repository_image_tag_mutability = "MUTABLE"
 }

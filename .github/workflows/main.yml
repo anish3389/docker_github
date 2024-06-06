@@ -90,3 +90,13 @@ jobs:
 
       - name: Push Database Image
         run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
+
+
+      - name: Push Backend Image (with latest tag)
+        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:latest
+
+      - name: Push Frontend Image (with latest tag)
+        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:latest
+
+      - name: Push Database Image (with latest tag)
+        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:latest

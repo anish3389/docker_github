@@ -74,29 +74,36 @@ jobs:
         run:  aws ecr get-login-password --region ${{ env.awsRegion }} | docker login --username AWS --password-stdin ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com
 
       - name: Build Backend Image
-        run: docker build -f backend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }} .
+        run: docker build -f backend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend .
 
       - name: Build Frontend Image
-        run: docker build -f frontend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }} .
+        run: docker build -f frontend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend .
 
       - name: Build Database Image
-        run: docker build -f database/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }} .
-
-      - name: Push Backend Image
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
-
-      - name: Push Frontend Image
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
-
-      - name: Push Database Image
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
+        run: docker build -f database/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database .
 
 
       - name: Push Backend Image (with latest tag)
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:latest
+        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend
 
       - name: Push Frontend Image (with latest tag)
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:latest
+        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend
 
       - name: Push Database Image (with latest tag)
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:latest
+        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database
+
+
+      - name: Push Backend Image
+        run: |
+          docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
+          docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
+
+      - name: Push Frontend Image
+        run: |
+          docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
+          docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
+
+      - name: Push Database Image
+        run: |
+          docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
+          docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}

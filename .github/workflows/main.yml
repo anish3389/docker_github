@@ -66,6 +66,9 @@ jobs:
           aws-secret-access-key: ${{ env.awsSecretAccessKey }}
           aws-session-token: ${{ env.awsSessionToken }}
           aws-region: ${{ env.awsRegion }}
+      
+      - name: Get ECR Login
+        run:  aws ecr get-login-password --region {{ awsRegion }} | docker login --username AWS --password-stdin {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com
 
       - name: Build Backend Image
         run: docker build -f backend/docker/Dockerfile -t {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-backend:latest .

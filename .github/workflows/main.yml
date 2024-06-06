@@ -80,10 +80,10 @@ jobs:
         run: docker build -f database/docker/Dockerfile -t {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-database:latest .
 
       - name: Push Backend Image
-        run: docker docker push {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-backend:latest
+        run: docker push {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-backend:latest
 
       - name: Push Frontend Image
-        run: docker docker push {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-frontend:latest
+        run: docker push {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-frontend:latest
 
       - name: Push Database Image
-        run: docker docker push {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-database:latest
+        run: docker push {{ awsAccountId }}.dkr.ecr.{{ awsRegion }}.amazonaws.com/anish-docker-database:latest

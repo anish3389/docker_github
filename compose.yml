@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/docker/Dockerfile
+    networks:
+      appnet:
+    ports:
+      - 9080:3000
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/docker/Dockerfile
+    networks:
+      appnet:
+    ports:
+      - 9081:80
+
+  database:
+    build:
+      context: .
+      dockerfile: database/docker/Dockerfile
+    networks:
+      appnet:
+    volumes:
+      - dbvolume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pass1234
+      MYSQL_DATABASE: appdb
+
+networks:
+  appnet:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.0.0/16
+
+volumes:
+  dbvolume:
+    # external: true

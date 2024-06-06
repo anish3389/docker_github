@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Users</h1>
+  <table id="users-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody id="users-tbody"></tbody>
+  </table>
+
+  <script>
+    fetch('http://localhost:9080/api/users')
+      .then(response => response.json())
+      .then(users => {
+        const tableBody = document.getElementById('users-tbody');
+        users.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      });
+  </script>
+</body>
+</html>

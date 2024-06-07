@@ -12,7 +12,7 @@ echo \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update
 
-apt-get install docker-ce docker-compose-plugin
+apt-get install -y docker-ce docker-compose-plugin
 
 
 # apt install docker

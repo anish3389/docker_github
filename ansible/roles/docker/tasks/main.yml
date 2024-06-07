@@ -2,6 +2,7 @@
 - name: Install amazon-ecr-credential-helper
   ansible.builtin.apt:
     name: amazon-ecr-credential-helper
+    update_cache: true
 
 - name: Create .docker dir for user
   ansible.builtin.file:

@@ -18,8 +18,6 @@ module "ec2" {
   subnet_id                   = var.subnet_id
   create_iam_instance_profile = var.create_iam_instance_profile
   iam_role_description        = "SSM Role for accessing EC2 instance"
-  # user_data                   = file(var.user_data_file)
-  # user_data_replace_on_change = true
 
   iam_role_policies = {
     SSM = var.ssm_policy

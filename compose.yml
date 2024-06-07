@@ -1,34 +1,34 @@
 services:
   backend:
     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-backend:latest
-    networks:
-      appnet:
+    # networks:
+    #   appnet:
     ports:
       - 3000:3000
 
   frontend:
     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-frontend:latest
-    networks:
-      appnet:
+    # networks:
+    #   appnet:
     ports:
       - 8001:80
 
   database:
     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-database:latest
-    networks:
-      appnet:
+    # networks:
+    #   appnet:
     volumes:
       - dbvolume:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: pass1234
       MYSQL_DATABASE: appdb
 
-networks:
-  appnet:
-    driver: bridge
-    ipam:
-     config:
-       - subnet: 10.1.0.0/16
+# networks:
+#   appnet:
+#     driver: bridge
+#     ipam:
+#      config:
+#        - subnet: 10.1.0.0/16
 
 volumes:
   dbvolume:

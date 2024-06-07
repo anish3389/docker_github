@@ -1,0 +1,23 @@
+---
+- name: Install amazon-ecr-credential-helper
+  ansible.builtin.apt:
+    name: amazon-ecr-credential-helper
+
+- name: Create .docker dir for user
+  ansible.builtin.file:
+    path: ~/.docker
+    state: directory
+
+- name: Push amazon-ecr-credential-helper config file
+  ansible.builtin.copy:
+    src: amazon-ecr-credential-helper.json
+    dest: ~/.docker/config.json
+
+- name: Push compose file
+  ansible.builtin.copy:
+    src: ../compose.yml
+    dest: /var/compose.yml
+
+- name: Pull Docker
+  community.docker.docker_compose_v2:
+    project_src: /var

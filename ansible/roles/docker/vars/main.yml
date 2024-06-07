@@ -1,0 +1,4 @@
+---
+server_code_file_dir: /var/s3files/code
+bucket_name: pipeline-anish-bucket2
+bucket_region: us-east-1

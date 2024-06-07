@@ -20,7 +20,7 @@ env:
   backendS3StateFile: anish_docker_github.tfstate
 
 
-  version: v0.0.1
+  version: v0.0.2
 
 jobs:
   create_resources:
@@ -107,3 +107,27 @@ jobs:
         run: |
           docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
           docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
+
+
+  pull_image_in_server: 
+    needs: [ create_resources ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ env.awsAccessKeyId }}
+          aws-secret-access-key: ${{ env.awsSecretAccessKey }}
+          aws-session-token: ${{ env.awsSessionToken }}
+          aws-region: ${{ env.awsRegion }}
+      
+      # - name: Install ansible
+      #   run: pip3 install -r requirements.txt
+
+      - name: Install ansible modules
+        run: cd ansible && ansible-galaxy collection install -r requirements.yml
+
+      - name: Run ansible
+        run: cd ansible && ansible-playbook -i prod.aws_ec2.yml playbook.yml

@@ -1,0 +1,4 @@
+---
+yum_packages:
+  - nginx
+nginx_conf_file: code.conf

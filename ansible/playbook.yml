@@ -1,7 +1,7 @@
 ---
 - name: Deploy image
   hosts: aws_ec2
-  gather_facts: false
+  gather_facts: true
   roles:
    - docker
   vars:

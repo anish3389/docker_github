@@ -17,8 +17,8 @@
 - name: Push compose file
   ansible.builtin.copy:
     src: ../compose.yml
-    dest: /var/compose.yml
+    dest: /tmp/compose.yml
 
 - name: Pull Docker
   community.docker.docker_compose_v2:
-    project_src: /var
+    project_src: /tmp

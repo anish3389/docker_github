@@ -4,14 +4,14 @@ services:
     networks:
       appnet:
     ports:
-      - 9080:3000
+      - 3000:3000
 
   frontend:
     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-frontend:latest
     networks:
       appnet:
     ports:
-      - 9081:80
+      - 8001:80
 
   database:
     image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-database:latest

@@ -124,7 +124,9 @@ jobs:
           aws-region: ${{ env.awsRegion }}
       
       - name: Install ansible
-        run: pip3 install -r ansible/pip-requirements.txt
+        run: |
+          source /opt/pipx/venvs/ansible-core/bin/activate
+          pip3 install -r ansible/pip-requirements.txt
 
       - name: Install ansible modules
         run: cd ansible && ansible-galaxy collection install -r requirements.yml

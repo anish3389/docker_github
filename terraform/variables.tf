@@ -46,7 +46,7 @@ variable "ecr_name" {
 variable "ami_id" {
   description = "AMI of the server (Default is Ubuntu 22.04)"
   type        = string
-  default     = "ami-012485deee5681dc0"
+  default     = "ami-07543813a68cc4fe9"
 }
 
 variable "instance_type" {
@@ -99,6 +99,12 @@ variable "ecr_policy" {
 
 variable "instance_name" {
   description = "Name of the instance"
+  type        = string
+  default     = ""
+}
+
+variable "user_data_file" {
+  description = "File name of user data"
   type        = string
   default     = ""
 }

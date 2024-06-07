@@ -23,94 +23,94 @@ env:
   version: v0.0.2
 
 jobs:
-  create_resources:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+  # create_resources:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: ${{ env.terraformVersion }}
-          terraform_wrapper: false
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v2
+  #       with:
+  #         terraform_version: ${{ env.terraformVersion }}
+  #         terraform_wrapper: false
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ env.awsAccessKeyId }}
-          aws-secret-access-key: ${{ env.awsSecretAccessKey }}
-          aws-session-token: ${{ env.awsSessionToken }}
-          aws-region: ${{ env.awsRegion }}
+  #     - name: configure aws credentials
+  #       uses: aws-actions/configure-aws-credentials@v3
+  #       with:
+  #         aws-access-key-id: ${{ env.awsAccessKeyId }}
+  #         aws-secret-access-key: ${{ env.awsSecretAccessKey }}
+  #         aws-session-token: ${{ env.awsSessionToken }}
+  #         aws-region: ${{ env.awsRegion }}
 
-      - name: Terraform Initialize
-        id: init
-        run: cd terraform && terraform init -backend-config="bucket=${{ env.backendS3Bucket }}" -backend-config="key=${{ env.backendS3AccountId }}/${{ env.backendS3StateFile }}" -backend-config="region=${{ env.backendS3Region }}"
+  #     - name: Terraform Initialize
+  #       id: init
+  #       run: cd terraform && terraform init -backend-config="bucket=${{ env.backendS3Bucket }}" -backend-config="key=${{ env.backendS3AccountId }}/${{ env.backendS3StateFile }}" -backend-config="region=${{ env.backendS3Region }}"
 
-      - name: Terraform Plan
-        id: plan
-        run: |
-          cd terraform && terraform apply -var-file=dev.tfvars -auto-approve -no-color
+  #     - name: Terraform Plan
+  #       id: plan
+  #       run: |
+  #         cd terraform && terraform apply -var-file=dev.tfvars -auto-approve -no-color
 
-      - name: Terraform Apply
-        id: apply
-        run: |
-          cd terraform && terraform apply -var-file=dev.tfvars -auto-approve -no-color
+  #     - name: Terraform Apply
+  #       id: apply
+  #       run: |
+  #         cd terraform && terraform apply -var-file=dev.tfvars -auto-approve -no-color
 
-  build_images:
-    needs: [ create_resources ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+  # build_images:
+  #   needs: [ create_resources ]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ env.awsAccessKeyId }}
-          aws-secret-access-key: ${{ env.awsSecretAccessKey }}
-          aws-session-token: ${{ env.awsSessionToken }}
-          aws-region: ${{ env.awsRegion }}
+  #     - name: configure aws credentials
+  #       uses: aws-actions/configure-aws-credentials@v3
+  #       with:
+  #         aws-access-key-id: ${{ env.awsAccessKeyId }}
+  #         aws-secret-access-key: ${{ env.awsSecretAccessKey }}
+  #         aws-session-token: ${{ env.awsSessionToken }}
+  #         aws-region: ${{ env.awsRegion }}
       
-      - name: Get ECR Login
-        run:  aws ecr get-login-password --region ${{ env.awsRegion }} | docker login --username AWS --password-stdin ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com
+  #     - name: Get ECR Login
+  #       run:  aws ecr get-login-password --region ${{ env.awsRegion }} | docker login --username AWS --password-stdin ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com
 
-      - name: Build Backend Image
-        run: docker build -f backend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend .
+  #     - name: Build Backend Image
+  #       run: docker build -f backend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend .
 
-      - name: Build Frontend Image
-        run: docker build -f frontend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend .
+  #     - name: Build Frontend Image
+  #       run: docker build -f frontend/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend .
 
-      - name: Build Database Image
-        run: docker build -f database/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database .
-
-
-      - name: Push Backend Image (with latest tag)
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend
-
-      - name: Push Frontend Image (with latest tag)
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend
-
-      - name: Push Database Image (with latest tag)
-        run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database
+  #     - name: Build Database Image
+  #       run: docker build -f database/docker/Dockerfile -t ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database .
 
 
-      - name: Push Backend Image
-        run: |
-          docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
-          docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
+  #     - name: Push Backend Image (with latest tag)
+  #       run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend
 
-      - name: Push Frontend Image
-        run: |
-          docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
-          docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
+  #     - name: Push Frontend Image (with latest tag)
+  #       run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend
 
-      - name: Push Database Image
-        run: |
-          docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
-          docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
+  #     - name: Push Database Image (with latest tag)
+  #       run: docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database
+
+
+  #     - name: Push Backend Image
+  #       run: |
+  #         docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
+  #         docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-backend:${{ env.version }}
+
+  #     - name: Push Frontend Image
+  #       run: |
+  #         docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
+  #         docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-frontend:${{ env.version }}
+
+  #     - name: Push Database Image
+  #       run: |
+  #         docker tag ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
+  #         docker push ${{ env.awsAccountId }}.dkr.ecr.${{ env.awsRegion }}.amazonaws.com/anish-docker-database:${{ env.version }}
 
 
   pull_image_in_server: 
-    needs: [ build_images ]
+    # needs: [ build_images ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -124,7 +124,7 @@ jobs:
           aws-region: ${{ env.awsRegion }}
       
       - name: Install ansible
-        run: pip3 install -r requirements.txt
+        run: pip3 install -r ansible/pip-requirements.txt
 
       - name: Install ansible modules
         run: cd ansible && ansible-galaxy collection install -r requirements.yml

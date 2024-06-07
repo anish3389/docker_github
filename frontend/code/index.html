@@ -27,7 +27,7 @@
   </table>
 
   <script>
-    fetch('http://localhost:9080/api/users')
+    fetch(`http://${location.hostname}:3000/api/users`)
       .then(response => response.json())
       .then(users => {
         const tableBody = document.getElementById('users-tbody');

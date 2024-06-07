@@ -1,26 +1,20 @@
 services:
   backend:
-    build:
-      context: .
-      dockerfile: backend/docker/Dockerfile
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-backend:latest
     networks:
       appnet:
     ports:
       - 9080:3000
 
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/docker/Dockerfile
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-frontend:latest
     networks:
       appnet:
     ports:
       - 9081:80
 
   database:
-    build:
-      context: .
-      dockerfile: database/docker/Dockerfile
+    image: 426857564226.dkr.ecr.us-east-1.amazonaws.com/anish-docker-database:latest
     networks:
       appnet:
     volumes:
@@ -38,4 +32,3 @@ networks:
 
 volumes:
   dbvolume:
-    # external: true

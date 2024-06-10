@@ -1,0 +1,53 @@
+name: Destroy Terraform Resources
+
+on:
+  workflow_dispatch:
+
+env:
+  terraformVersion: 1.8.2
+  awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  awsSessionToken: ${{ secrets.AWS_SESSION_TOKEN }}
+  awsAccountId: ${{ secrets.ACCOUNT_ID }}
+
+  awsRegion: us-east-1
+  backendS3Bucket: 8586-terraform-state
+  backendS3Region: us-east-1
+  backendS3AccountId: ${{ secrets.ACCOUNT_ID }}
+  backendS3StateFile: anish_docker_github.tfstate
+
+jobs:
+  run_terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.terraformVersion }}
+          terraform_wrapper: false
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ env.awsAccessKeyId }}
+          aws-secret-access-key: ${{ env.awsSecretAccessKey }}
+          aws-session-token: ${{ env.awsSessionToken }}
+          aws-region: ${{ env.awsRegion }}
+
+      - name: Terraform Initialize
+        id: init
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=${{ env.backendS3Bucket }}" -backend-config="key=${{ env.backendS3AccountId }}/${{ env.backendS3StateFile }}" -backend-config="region=${{ env.backendS3Region }}"
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd terraform && terraform apply -var-file=dev.tfvars -auto-approve -no-color
+
+      - name: Terraform Destroy
+        id: apply
+        run: |
+          cd terraform && terraform destroy -var-file=dev.tfvars -auto-approve -no-color
